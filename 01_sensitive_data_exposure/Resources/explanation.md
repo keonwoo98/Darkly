@@ -8,15 +8,18 @@
 ## How We Found It
 
 ### Step 1: Check robots.txt
-Accessed `http://192.168.64.2/robots.txt` and found:
-```
-User-agent: *
-Disallow: /whatever
-Disallow: /.hidden
-```
+Accessed `http://192.168.64.2/robots.txt`:
+
+![robots.txt reveals hidden directories](images/robots.png)
+
+The robots.txt file disallows `/whatever` and `/.hidden` paths - this reveals potentially sensitive directories.
 
 ### Step 2: Explore Hidden Directory
-Navigated to `http://192.168.64.2/whatever/` - directory listing enabled, found `htpasswd` file.
+Navigated to `http://192.168.64.2/whatever/`:
+
+![Directory listing exposes htpasswd file](images/whatever.png)
+
+Directory listing is enabled, exposing the `htpasswd` file (38 bytes) publicly.
 
 ### Step 3: Download Credentials
 Downloaded `http://192.168.64.2/whatever/htpasswd`:
@@ -26,13 +29,20 @@ root:437394baff5aa33daa618be47b75cb49
 
 ### Step 4: Crack MD5 Hash
 Used [CrackStation.net](https://crackstation.net/) to crack the MD5 hash:
-- **Result**: `qwerty123@`
+
+![Cracking MD5 hash online](images/crack-pwd.png)
+
+The hash `437394baff5aa33daa618be47b75cb49` decrypts to: **`qwerty123@`**
 
 ### Step 5: Find Admin Panel
-Checked common admin location: `http://192.168.64.2/admin/` - login form found.
+Checked common admin location: `http://192.168.64.2/admin/`:
+
+![Admin login form](images/admin.png)
+
+Found a "Secured Area" login form.
 
 ### Step 6: Login
-Used credentials `root:qwerty123@` - **Access granted!**
+Used credentials `root:qwerty123@` - **Access granted!** Flag revealed.
 
 ## How to Exploit
 
