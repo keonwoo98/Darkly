@@ -10,14 +10,14 @@
 ### Step 1: Check robots.txt
 Accessed `http://192.168.64.2/robots.txt`:
 
-![robots.txt reveals hidden directories](images/robots.png)
+![robots.txt reveals hidden directories](images/01-robots-txt.png)
 
 The robots.txt file disallows `/whatever` and `/.hidden` paths - this reveals potentially sensitive directories.
 
 ### Step 2: Explore Hidden Directory
 Navigated to `http://192.168.64.2/whatever/`:
 
-![Directory listing exposes htpasswd file](images/whatever.png)
+![Directory listing exposes htpasswd file](images/02-directory-listing.png)
 
 Directory listing is enabled, exposing the `htpasswd` file (38 bytes) publicly.
 
@@ -30,14 +30,14 @@ root:437394baff5aa33daa618be47b75cb49
 ### Step 4: Crack MD5 Hash
 Used [CrackStation.net](https://crackstation.net/) to crack the MD5 hash:
 
-![Cracking MD5 hash online](images/crack-pwd.png)
+![Cracking MD5 hash online](images/03-md5-crack.png)
 
 The hash `437394baff5aa33daa618be47b75cb49` decrypts to: **`qwerty123@`**
 
 ### Step 5: Find Admin Panel
 Checked common admin location: `http://192.168.64.2/admin/`:
 
-![Admin login form](images/admin.png)
+![Admin login form](images/04-admin-login.png)
 
 Found a "Secured Area" login form.
 
@@ -74,7 +74,7 @@ curl http://192.168.64.2/whatever/htpasswd
 5. **Weak password** - Simple dictionary word with common pattern
 6. **Predictable admin path** - /admin/ is too obvious
 
-## How to Fix
+## Mitigation
 
 1. **Move htpasswd outside web root**:
    ```bash
