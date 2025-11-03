@@ -1,0 +1,8 @@
+# Darkly project
+*.iso
+*.ISO
+.DS_Store
+*.swp
+*~
+.idea/
+.vscode/
