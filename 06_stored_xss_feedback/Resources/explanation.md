@@ -5,6 +5,59 @@
 - OWASP: A03:2021 - Injection
 - CWE-79: Improper Neutralization of Input During Web Page Generation (Cross-site Scripting)
 
+---
+
+## What is Stored XSS?
+
+> **XSS basics** are explained in [Breach #5: Reflected XSS](../05_xss_media/Resources/explanation.md).
+
+### This Vulnerability: Stored XSS
+
+```
+Attacker → Posts malicious code in forum/comments
+         ↓
+Server → Stores in database
+         ↓
+All visitors → View the page
+         ↓
+All visitors → Automatically execute malicious code
+```
+
+### Key Differences from Reflected XSS
+
+| Feature | Reflected XSS (Breach #5) | Stored XSS (This Breach) |
+|---------|--------------------------|--------------------------|
+| Storage | ❌ Only in URL | ✅ **Permanently stored in DB** |
+| Impact Scope | One victim (URL clicker) | **All visitors** 💀 |
+| Attack Method | Share malicious URL | Post in forum/comments |
+| Trigger | Requires URL click | **Auto-executes on page view** |
+| Persistence | One-time | Permanent (until removed) |
+| Risk Level | Medium | **High (Most Dangerous)** |
+
+### Why is Stored XSS More Dangerous?
+
+**Reflected XSS**:
+```
+Attacker → Sends malicious URL to 1 person
+         ↓
+Only 1 victim infected
+```
+
+**Stored XSS**:
+```
+Attacker → Posts once
+         ↓
+Stored on server
+         ↓
+Visitor A → Infected
+Visitor B → Infected
+Visitor C → Infected
+...
+Hundreds infected simultaneously! 💣
+```
+
+---
+
 ## How We Found It
 
 ### Discovery: Feedback Page with User Input
@@ -41,21 +94,25 @@ Message: test
 
 **Result**: The `<script>` tag is filtered/removed ❌
 
-**Test 2** - Uppercase variant:
-```
-Name: <ScRipT>alert(1)</sCriPt>
-Message: test
-```
-
-**Result**: Still filtered (case-insensitive filter) ❌
-
-**Test 3** - Image tag with onerror:
+**Test 2** - Image tag with onerror:
 ```
 Name: <img src=x onerror=alert(1)>
 Message: test
 ```
 
 **Result**: XSS executes! But no flag ❌
+
+**Why this test second?** After `<script>` is blocked, attackers immediately try other HTML tags with event handlers, as this is the most common blacklist bypass.
+
+**Test 3** - SVG tag with onload:
+```
+Name: <svg onload=alert(2)>
+Message: test
+```
+
+**Result**: XSS executes! But no flag ❌
+
+**Why test multiple vectors?** To confirm that multiple XSS vectors are available, indicating a weak blacklist-based filter rather than proper output encoding.
 
 **Test 4** - Just the word "script":
 ```
