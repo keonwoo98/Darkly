@@ -5,6 +5,83 @@
 - OWASP: A03:2021 - Injection
 - CWE-79: Improper Neutralization of Input During Web Page Generation (Cross-site Scripting)
 
+---
+
+## What is XSS (Cross-Site Scripting)?
+
+### Basic Concept
+**XSS (Cross-Site Scripting)** is an attack where an attacker injects malicious scripts into web pages, which then execute in other users' browsers.
+
+### Why is it Dangerous?
+```
+Attacker injects malicious JavaScript
+  ↓
+Victim's browser executes it
+  ↓
+Attacker can perform any action as the victim
+```
+
+**Possible Attacks**:
+- 🔓 **Session Cookie Theft**: Account takeover
+- 🎣 **Phishing**: Display fake login forms
+- ⚙️ **Account Manipulation**: Perform actions as victim
+- 📱 **Keylogging**: Record user input
+- 🦠 **Malware Distribution**: Redirect to malicious sites
+
+### Types of XSS
+
+#### 1. Reflected XSS ← This Vulnerability
+```
+Attacker → Creates malicious URL
+         ↓
+Victim → Clicks URL
+         ↓
+Server → Includes malicious code in response
+         ↓
+Victim's Browser → Executes malicious code
+```
+
+**Characteristics**:
+- Malicious code in URL parameters
+- Requires victim to click the URL
+- Executes once (not stored)
+
+**Example**:
+```
+http://site.com/?search=<script>alert(document.cookie)</script>
+```
+
+#### 2. Stored XSS
+```
+Attacker → Posts malicious code in forum/comments
+         ↓
+Server → Stores in database
+         ↓
+All visitors → View the page
+         ↓
+All visitors → Execute malicious code
+```
+
+**Characteristics**:
+- Permanently stored on server
+- Automatically executes for all visitors
+- Most dangerous type
+
+#### 3. DOM-based XSS
+```
+Malicious URL → Browser JavaScript
+              ↓
+Processed client-side only
+              ↓
+Executes malicious code
+```
+
+**Characteristics**:
+- No server involvement
+- Pure client-side vulnerability
+
+---
+
 ## How We Found It
 
 ### Discovery: Media Page with src Parameter
