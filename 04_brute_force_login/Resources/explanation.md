@@ -36,7 +36,7 @@ Since there was no rate limiting or account lockout, we performed a brute force 
 
 **Password List Sources**:
 1. **Wikipedia**: [List of the most common passwords](https://en.wikipedia.org/wiki/List_of_the_most_common_passwords)
-2. **SecLists**: [darkweb2017-top1000.txt](https://github.com/danielmiessler/SecLists/blob/master/Passwords/darkweb2017-top1000.txt)
+2. **SecLists**: [darkweb2017_top-1000.txt](https://github.com/danielmiessler/SecLists/blob/master/Passwords/Common-Credentials/darkweb2017_top-1000.txt)
 3. **RockYou**: Famous password leak database
 
 **Top 20 Most Common Passwords** (from Wikipedia/SplashData research):
@@ -133,7 +133,7 @@ import time
 TARGET = "http://192.168.64.2/index.php"
 
 # Top passwords from SecLists
-with open('darkweb2017-top1000.txt', 'r') as f:
+with open('darkweb2017_top-1000.txt', 'r') as f:
     passwords = [line.strip() for line in f]
 
 usernames = ['admin', 'root', 'user', 'administrator']
@@ -515,7 +515,7 @@ Cost to attacker: $0
 
 2. **SecLists by Daniel Miessler**
    - Repository: https://github.com/danielmiessler/SecLists
-   - File: `Passwords/darkweb2017-top1000.txt`
+   - File: `Passwords/Common-Credentials/darkweb2017_top-1000.txt`
    - File: `Passwords/Common-Credentials/10-million-password-list-top-1000000.txt`
    - License: MIT
 

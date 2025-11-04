@@ -62,7 +62,7 @@ for username in "${USERNAMES[@]}"; do
             echo ""
 
             # Extract flag
-            FLAG=$(echo "$RESPONSE" | grep -oP 'The flag is : \K[a-f0-9]+')
+            FLAG=$(echo "$RESPONSE" | sed -n 's/.*The flag is : \([a-f0-9]*\).*/\1/p')
             echo "   Flag: $FLAG"
 
             exit 0
